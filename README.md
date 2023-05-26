@@ -11,3 +11,7 @@ Kompilacja - `gcc -Wall kod.c -o kod`
 `Sygnal` - Komunikat asynchroniczny wysylany do procesu lub do watku w celu poinformowania go, że wystepuje jakies zdarzenie. (Przerwanie, blad, zadanie zakonczenia itp).
 
 `Semafor` - Mechanizm synchronizacji uzywany w systemie operacyjnym. Moze miec wartosc 0 lub 1. Procesy moga wywolywac operacje na semaforach takie jak proba zblokowania i oczekiwanie na zasób lub zwolnienie zasobu. Semafor zapewnia tylko jeden proces lub watek.
+
+## Umask
+
+<img src="assets/umask.png">
