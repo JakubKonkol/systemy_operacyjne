@@ -1,0 +1,26 @@
+Napisz skrypt, który wyświetli informacje odnośnie tego jaka jest ścieżka do pliku terminala osoby, której login zostanie pobrany jako argument.
+
+
+#!/bin/bash
+
+# Sprawdzanie liczby argumentów
+if [ $# -ne 1 ]; then
+    echo "Użycie: $0 <login>"
+    exit 1
+fi
+
+login=$1
+
+# Pobranie informacji o użytkowniku
+user_info=$(getent passwd "$login")
+
+# Sprawdzenie, czy użytkownik istnieje
+if [ -z "$user_info" ]; then
+    echo "Użytkownik $login nie istnieje."
+    exit 1
+fi
+
+# Pobranie ścieżki do pliku terminala
+terminal_path=$(echo "$user_info" | awk -F: '{print $7}')
+
+echo "Ścieżka do pliku terminala dla użytkownika $login: $terminal_path"

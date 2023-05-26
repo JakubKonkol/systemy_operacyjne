@@ -1,0 +1,4 @@
+Napisz program, który utworzy proces potomny.
+Proces potomny powinien wyświetlać swój identyfikator oraz identyfikator procesu nadrzędnego oraz "wylosowaną" liczbę z zakresu [1; 50] oraz zakończyć swoje działanie w momencie, gdy wylosowana liczba będzie podzielna przez 5.
+Proces nadrzędny poczekać, aż jego proces potomny zakończy swoje działanie i wypisać komunikat w którym wypisze swoje id, a następnie zakończyć program.
+Podpowiedź: W celu losowania liczb możesz użyć biblioteki: <time.h>, <stdlib.h> oraz funkcji rand.

@@ -1,0 +1,36 @@
+Napisz skrypt, który jako argument pobierze ścieżkę do pliku. Następnie jeżeli plik
+ ma rozszerzenie *.txt otworzy go w dowolnym edytorze tekstu, jeżeli ma rozszerzenie *.sh 
+uruchomi skrypt w przeciwnym razie wyświetli
+ odpowiedni komunikat informujący, że plik jest nieznany. Jeżeli żaden argument nie zostanie
+ pobrany wyświetl komunikat informujący, że brakuje argumentu.
+
+
+
+
+#!/bin/bash
+
+# Sprawdzanie liczby argumentów
+if [ $# -eq 0 ]; then
+    echo "Użycie: $0 <ścieżka_do_pliku>"
+    exit 1
+fi
+
+file_path=$1
+file_extension=${file_path##*.}
+
+# Sprawdzenie rozszerzenia pliku
+if [ "$file_extension" = "txt" ]; then
+    # Otwieranie pliku tekstowego w dowolnym edytorze tekstu
+    echo "Otwieranie pliku $file_path w edytorze tekstu..."
+    # Dodaj tu komendę, która otworzy plik w edytorze tekstu, np.:
+    # nano "$file_path"
+elif [ "$file_extension" = "sh" ]; then
+    # Uruchamianie skryptu shell
+    echo "Uruchamianie skryptu $file_path..."
+    chmod +x "$file_path" # Nadanie uprawnień wykonywalnych
+    "./$file_path"
+else
+    echo "Plik $file_path jest nieznany."
+fi
+
+

@@ -1,0 +1,14 @@
+Utwórz program, który będzie działał w nieskończonej pętli. Jeżeli do procesu uruchamiający skrypt zostanie wysłany sygnał SIGINT, powinien wyświetlać napis: Jestem nieśmiertelny oraz swój indentyfikator procesu. Jeżeli do procesu uruchamiający skrypt zostanie wysłany sygnał SIGHUP, skrypt powinien przestać reagować na sygnał SIGINT.
+Podpowiedź: Przykładowy program obsługujący sygnał:
+#include <stdio.h>
+#include <signal.h>
+#include <unistd.h>
+
+void handleSignal(int s) {
+ write(STDOUT_FILENO, "HELLO", 5);
+}
+
+int main() {
+ signal(SIGINT, handleSignal);
+ return 0;
+}

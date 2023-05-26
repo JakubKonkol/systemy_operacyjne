@@ -1,0 +1,18 @@
+Napisz skrypt, który utworzy zmienną środowiskową o nazwie test o wartości pobranej jako argument. Uruchom skrypt w podpłowoce (czyli tak jak zawsze) i 
+bieżącej powłoce (przy drugim sposobie nie umieszczaj exit 0 na końcu skryptu). 
+Sprawdź czy zmienna środowiskowa została utworzona po pierwszy i drugim uruchomieniu.
+
+
+
+#!/bin/bash
+
+# Sprawdzanie liczby argumentów
+if [ $# -ne 1 ]; then
+    echo "Użycie: $0 <wartość>"
+    exit 1
+fi
+
+# Utworzenie zmiennej środowiskowej
+export test="$1"
+
+echo "Zmienna środowiskowa 'test' została utworzona z wartością: $1"
