@@ -4,11 +4,9 @@
 #include <pthread.h>
 #include <sys/types.h>
 #include <signal.h>
-
-#define NUM_THREADS 2
-
-int distance[10];
-int is_horizontal_green = 0;
+#define NUM_THREADS 2 //liczba watkow
+int distance[10]; 
+int isGreenOnHorizontal = 0;
 int laneUpPID;
 int laneDownPID;
 int laneRightPID;
@@ -36,13 +34,12 @@ void handleSingal(int sig)
         carIndex++;
     }
 }
-
 void handleSignalSigint(int sig){
     if (sig == SIGINT) isAccident = 0;
 }
 
 void handleSignalSigusr1(int sig){
-    if (sig == SIGUSR1) isVerticalCar = 0;
+    if (sig == SIGUSR1) isVerticalCar = 0; 
 }
 
 void handleSignalSigusr2(int sig){
@@ -50,35 +47,33 @@ void handleSignalSigusr2(int sig){
 }
 void *changeLightTread(void *arg){ //Proces do obslugi zmiany swiatel
     while(1){
-        is_horizontal_green = 1;
+        isGreenOnHorizontal = 1;
         printf("vertical:green, horizontal: red\n");
         sleep(3);
-        is_horizontal_green = 0;
+        isGreenOnHorizontal = 0;
         printf("vertical:red, horizontal: green\n");
         sleep(3);
     }
 }
-
 void *verticalTread(void *arg){ //WATEK DO PASA RUCHU (PIONOWEGO)
     while(1){
         for(int i = 0; i < carIndex; i++){
             sleep(1);
             if (distance[i] <= 0){
                 continue;
-            }else if(is_horizontal_green && distance[i] <= 5){
+            }else if(isGreenOnHorizontal && distance[i] <= 5){
                 if(distance[i] <= 3 && distance[i] > 0) kill(getppid(), SIGUSR1);
                 break; //zatrzymanie aut
-            }else if(!is_horizontal_green){
+            }else if(!isGreenOnHorizontal){
                 distance[i]--;
                 printf("auto na drodze pionowej porusza sie\n");
-            }else if(is_horizontal_green && distance[i] > 5){
+            }else if(isGreenOnHorizontal && distance[i] > 5){
                 distance[i]--;
                 printf("auto na drodze pionowej porusza sie\n");
             }
         }    
     }
 }
-
 void *horizontalTread(void *arg){ //WATEK DO PASA RUCHU (POZIOMEGO)
     while(1){
         for(int i = 0; i < carIndex; i++){
@@ -86,7 +81,7 @@ void *horizontalTread(void *arg){ //WATEK DO PASA RUCHU (POZIOMEGO)
             if (distance[i] <= 0){
                 continue;
             }  
-            else if(!is_horizontal_green && distance[i] <= 5){
+            else if(!isGreenOnHorizontal && distance[i] <= 5){
                 if(distance[i] <= 3 && distance[i] > 0) //dystans (0;3> )
                 {
                     kill(getppid(), SIGUSR2); //zabijam proces czyli zatrzymuje auta
@@ -95,11 +90,11 @@ void *horizontalTread(void *arg){ //WATEK DO PASA RUCHU (POZIOMEGO)
                 printf("Zatrzymuje auta\n");
                 break;
             }
-            else if(is_horizontal_green){
+            else if(isGreenOnHorizontal){
                     distance[i]--; //zmiejszam dystans 
                     printf("auto na drodze poziomej porusza sie\n");
             } 
-            else if(!is_horizontal_green && distance[i] > 5){
+            else if(!isGreenOnHorizontal && distance[i] > 5){
                     distance[i]--;
                     printf("Auto na drodze poziomej porusza sie\n");
             }
@@ -139,7 +134,6 @@ void vertical_traffic(){
         } 
     }
 }
-
 void horizontal_traffic(){
     laneLeftPID = fork();
     if (laneLeftPID == 0){
@@ -151,11 +145,10 @@ void horizontal_traffic(){
         pthread_t threads_lftl[NUM_THREADS];
         pthread_create(&threads_lftl[0], NULL, changeLightTread, NULL); //Tworze watek
         pthread_create(&threads_lftl[1], NULL, horizontalTread, NULL); //Tworze watek
-
         while (1){
             sleep(1); 
-        }
-    }else {
+            }   
+        }else{
         laneRightPID = fork();
         if (laneRightPID == 0){
             signal(SIGUSR1, handleSingal);
@@ -173,7 +166,6 @@ void horizontal_traffic(){
         } 
     }
 }
-
 int main(){
     //Ustawiam obsluge sygnalow
     signal(SIGINT, handleSignalSigint);
@@ -185,9 +177,9 @@ int main(){
     //tablica PID do procesow.
     int child_pids[4] = {laneUpPID, laneDownPID, laneLeftPID, laneRightPID};
     srand(time(NULL));
-    while (isAccident) {
+    while (isAccident){
         int random_child = rand() % 4; // Wybieram losowy proces potomny
-        kill(child_pids[random_child], SIGUSR1); // Zabijam proces
+        kill(child_pids[random_child], SIGUSR1); 
         sleep(10); //Czekam 10 sekund, zeby bledu nie bylo ? XD
         if(!isHorizontalCar && !isVerticalCar) {
             printf("WYPADEK!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"); //jesli jest wypadek to mamy wypadek :)
@@ -201,5 +193,6 @@ int main(){
     kill(laneUpPID, SIGKILL);
     kill(laneLeftPID, SIGKILL);
     kill(laneRightPID, SIGKILL);
+    printf("WYPADEK!!!!!\n");
     return 0;
 }
